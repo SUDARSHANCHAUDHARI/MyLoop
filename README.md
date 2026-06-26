@@ -1,5 +1,8 @@
 # MyLoop
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Made for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-7c6cfc)
+
 **Loop Engineering for Claude Code — but the loop actually runs.**
 
 > You don't prompt the agent. You design the loop that prompts the agent.
@@ -138,4 +141,15 @@ New to this? Read [`LEARN.md`](LEARN.md) and run the dry-run.
 The Loop Engineering framing — five primitives + memory, the L1→L3 phasing, the maker/checker
 pattern — is from Cobus Greyling's [loop-engineering](https://github.com/cobusgreyling/loop-engineering),
 building on Peter Steinberger and Boris Cherny. MyLoop is an independent, runnable implementation
-for Claude Code. MIT licensed.
+for Claude Code.
+
+---
+
+## Author
+
+**Sudarshan Chaudhari** — SudarshanTechLabs
+GitHub: [@SUDARSHANCHAUDHARI](https://github.com/SUDARSHANCHAUDHARI)
+
+## License
+
+Released under the [MIT License](LICENSE). © 2026 Sudarshan Chaudhari (SudarshanTechLabs).
