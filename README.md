@@ -44,13 +44,36 @@ bin/run-loop.sh
 cat STATE.md
 ```
 
-Three ways to schedule it:
+---
 
-| How | Command |
-|-----|---------|
-| **Claude Code** | `/loop 1d bin/run-loop.sh` (self-paced or interval) |
-| **cron** | `0 8 * * 1-5  cd /path/to/MyLoop && bin/run-loop.sh` |
-| **GitHub Actions** | [`.github/workflows/daily-triage.yml`](.github/workflows/daily-triage.yml) (set `ANTHROPIC_API_KEY` secret) |
+## Running modes & auth — pick what fits you
+
+The loop is a shell script that calls an agent CLI. **Where** you run it decides whether you
+need a credential at all. You don't have to choose one mode forever — all three ship here.
+
+| Mode | How | Auth needed |
+|------|-----|-------------|
+| **Local, interactive** | `bin/run-loop.sh` in your terminal, or `/loop 1d bin/run-loop.sh` inside Claude Code | **None.** Uses your existing `claude login` session. |
+| **Local, cron** | `0 8 * * 1-5  cd /path/to/MyLoop && bin/run-loop.sh` | **None**, as long as your machine has `claude` logged in. |
+| **Unattended (GitHub Actions)** | [`.github/workflows/daily-triage.yml`](.github/workflows/daily-triage.yml) | **One credential** (below) — there's no logged-in session on a CI box. |
+
+### Why CI needs a credential
+A scheduled Action runs on a fresh VM with nobody logged in — nothing to borrow auth from.
+So one of these repo secrets must be set (you need **only one**):
+
+| Secret | What it is | Cost |
+|--------|-----------|------|
+| `CLAUDE_CODE_OAUTH_TOKEN` | run `claude setup-token`, paste the result | **Uses your Claude subscription — no extra billing.** Recommended. |
+| `ANTHROPIC_API_KEY` | a pay-per-token API key | Metered API billing, separate from your plan. |
+
+The workflow auto-detects whichever you set. Set neither and it fails fast with a clear message.
+
+### Don't want CI at all?
+Delete `.github/workflows/daily-triage.yml` and run MyLoop purely locally — you'll never touch a key.
+
+### Using a different agent?
+`bin/run-loop.sh` shells out to `claude --print`. Point it at another CLI (`codex`, `grok`, …)
+if you prefer — each tool just needs its own auth when run unattended.
 
 ---
 
