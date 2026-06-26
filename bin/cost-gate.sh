@@ -17,11 +17,13 @@ set -euo pipefail
 
 CHARS=0
 CAP=""
+LOCAL=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --chars) CHARS="$2"; shift 2 ;;
     --cap)   CAP="$2";   shift 2 ;;
+    --local) LOCAL=1;    shift ;;   # local engine: estimate only, never block
     *) echo "Unknown arg: $1" >&2; exit 2 ;;
   esac
 done
@@ -36,6 +38,11 @@ INPUT_TOKENS=$(( CHARS / 4 ))
 OUTPUT_RESERVE=4000                    # assume the model writes a state file back
 EST=$(( INPUT_TOKENS + OUTPUT_RESERVE ))
 PCT=$(( EST * 100 / CAP ))
+
+if [ "$LOCAL" -eq 1 ]; then
+  echo "  cost-gate: ~${EST} tokens — local engine, no spend cap enforced."
+  exit 0
+fi
 
 echo "  cost-gate: ~${EST} tokens (in ~${INPUT_TOKENS} + out ~${OUTPUT_RESERVE}) vs cap ${CAP}  (${PCT}%)"
 

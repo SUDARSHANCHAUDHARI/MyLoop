@@ -71,9 +71,27 @@ The workflow auto-detects whichever you set. Set neither and it fails fast with 
 ### Don't want CI at all?
 Delete `.github/workflows/daily-triage.yml` and run MyLoop purely locally — you'll never touch a key.
 
-### Using a different agent?
-`bin/run-loop.sh` shells out to `claude --print`. Point it at another CLI (`codex`, `grok`, …)
-if you prefer — each tool just needs its own auth when run unattended.
+### Engines — Claude, a local model, or anything
+
+The loop isn't tied to Claude. Pick the engine in [`LOOP.md`](LOOP.md) (or override via env):
+
+| `ENGINE` | What runs | Key/token needed? |
+|----------|-----------|-------------------|
+| `claude` | Claude Code (default) | local: no (your login). CI: yes (token or key). |
+| `ollama` | **A fully local model** — runs on your machine, offline | **Never. No key anywhere, even in CI.** Free. |
+| `opencode` | OpenCode CLI (its own provider config) | depends on the provider you point it at |
+| `custom`  | any command via `ENGINE_CMD` (reads prompt on stdin → completion on stdout) | whatever that tool needs |
+
+The headline: **with `ENGINE: ollama` you need no API key at all** — the model is local, so even an
+unattended/scheduled run costs nothing and works offline. The cost gate becomes informational only.
+
+```bash
+# fully local, free, no key — install ollama first, then:
+ENGINE=ollama ENGINE_MODEL=llama3.1 bin/run-loop.sh
+
+# any other CLI you like:
+ENGINE=custom ENGINE_CMD='my-llm --stdin' bin/run-loop.sh
+```
 
 ---
 

@@ -44,11 +44,24 @@ The whole point of this file. You **earn** your way up the ladder; you never sta
 - Prune resolved items from `STATE.md` every run — the spine must not bloat.
 - Flag for human: design decisions, security work, anything unresolved 3+ runs.
 
+## Engine
+Which model/agent the loop calls. The runner reads these; env vars override them.
+```
+ENGINE: claude
+ENGINE_MODEL: claude-opus-4-8
+ENGINE_CMD:
+```
+- `claude` — Claude Code. Uses your login locally; needs a token/key only in CI.
+- `ollama` — fully **local** model (free, offline, no key). Set `ENGINE_MODEL: llama3.1` etc.
+- `opencode` — OpenCode CLI; model via its own provider config or `ENGINE_MODEL`.
+- `custom` — set `ENGINE_CMD` to any command that reads a prompt on stdin, prints completion on stdout.
+
 ## Budget
 ```
 DAILY_TOKEN_CAP: 100000
 ```
 `bin/cost-gate.sh` estimates each run against this cap **before** spending. Over cap → it stops and asks.
+Local engines (`ollama`) skip the cap — the estimate is shown but never blocks.
 
 ## Spawn budget
 ```
