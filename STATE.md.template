@@ -1,0 +1,22 @@
+# Loop State
+
+> The memory spine. A loop run reads this, acts, and rewrites it. It is how a stateless
+> agent gets continuity across runs. Keep it lean — prune resolved items every run.
+
+Last run: never
+Last level: L1
+
+## High Priority
+<!-- Items a competent engineer would act on today. Each: what / why / first step / size (S/M/L) -->
+
+## Watch
+<!-- Lower urgency, monitor only -->
+
+## Noise / Ignore
+<!-- Reviewed, not actionable -->
+
+## Human-flagged
+<!-- Needs a person: design decisions, security, anything unresolved 3+ runs -->
+
+## Facts for next run
+<!-- Approvals, blockers, status carried forward -->

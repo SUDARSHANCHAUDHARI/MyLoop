@@ -1,0 +1,55 @@
+name: Daily Triage Loop
+
+# Scheduler for the daily-triage loop. L1 is enforced two ways:
+#   1. LOOP.md says LEVEL: L1
+#   2. this job's GITHUB_TOKEN is granted read-only scopes below
+# To graduate to L2, raise the level in LOOP.md AND widen permissions deliberately.
+
+on:
+  schedule:
+    - cron: '0 8 * * 1-5'   # 08:00 UTC, Mon–Fri
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  checks: read
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # run-loop.sh reads recent git history for signals
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run the loop
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bin/run-loop.sh
+
+      - name: Commit updated state
+        run: |
+          if git diff --quiet STATE.md; then
+            echo "No state change."
+          else
+            git config user.name  "loop-bot"
+            git config user.email "loop-bot@users.noreply.github.com"
+            git add STATE.md loop-run-log.md
+            git commit -m "chore(loop): daily-triage state update"
+            git push
+          fi
+
+      - name: Upload state artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: loop-state
+          path: |
+            STATE.md
+            loop-run-log.md
+          if-no-files-found: ignore

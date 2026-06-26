@@ -1,0 +1,24 @@
+# NOTE: STATE.md (the memory spine) and loop-run-log.md ARE committed on purpose —
+# the loop needs durable state across runs, especially in CI. STATE.md.template is
+# the seed for a fresh clone.
+
+# Secrets
+.env
+.env.*
+!.env.example
+local.properties
+*.key
+*.pem
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Node (tooling, if added later)
+node_modules/
+dist/
+
+# Claude Code local settings
+.claude/settings.local.json
